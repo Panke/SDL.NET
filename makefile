@@ -19,16 +19,15 @@ PKG_SRC = $(PKG) README.md ORDERS.md makefile $(wildcard test/*.cs) test/makefil
 BIN = bin
 CSC = dmcs
 #-nologo
-NUNIT = nunit-console4 
+NUNIT = ~/nunit
 CSCFLAGS += -debug -nologo -target:$(TARGET)
 CSCFLAGS += -lib:$(BIN)
 CSCFLAGS += $(RES_OPT)
 BASE_NAME = $(basename $(NAME))
 
-PUBLISH_DIR=$(CS_DIR)/lib/Microline/$(BASE_NAME)/$(VERSION)
+PUBLISH_DIR = $(CS_DIR)/lib/Microline/$(BASE_NAME)/$(VERSION)
 PKG_PREFIX = $(BASE_NAME)-$(VERSION)
 PKG_DIR = pkg/$(PKG_PREFIX)
-#cs_dir e' una variabile d'ambiente
 .PHONY: all clean clobber test alltest pkg pkgsrc publish
 
 all: builddir $(BIN)/$(NAME)

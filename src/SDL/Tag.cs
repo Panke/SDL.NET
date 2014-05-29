@@ -135,10 +135,30 @@ namespace SDL {
          }
       }
 
+      public T ValueAs<T>(T returnValueIfException) {
+         try {
+            return ValueAs<T>();
+         } catch {
+            return returnValueIfException;
+         }
+      }
+
+      public T ValueAs<T>() {
+         if (this.Value is T) {
+            return (T)this.Value;
+         } else {
+            var destinationType = typeof(T);
+            if (destinationType.IsNullable()) {
+               destinationType = new System.ComponentModel.NullableConverter(destinationType).UnderlyingType;
+            }
+            return (T)System.Convert.ChangeType(this.Value, destinationType);
+         }
+
+      }
       /**
-      * A property for the tag's children.  When read, this property returns
-      * a copy of the children.
-      */
+       * A property for the tag's children.  When read, this property returns
+       * a copy of the children.
+       */
       public IList<Tag> Children {
          set {
             childrenDirty = true;
@@ -155,9 +175,9 @@ namespace SDL {
       }
 
       /**
-      * A property for the tag's values.  When read, this property returns
-      * a copy of the values.
-      */
+       * A property for the tag's values.  When read, this property returns
+       * a copy of the values.
+       */
       public IList<object> Values {
          set {
             valuesDirty = true;
@@ -182,9 +202,9 @@ namespace SDL {
       // HERE! TODO: From here down - validate all values using CoerceOrFail
 
       /**
-      * A property for the tag's attributes.  When read, this property
-      * returns a copy of the attributes.
-      */
+       * A property for the tag's attributes.  When read, this property
+       * returns a copy of the attributes.
+       */
       public IDictionary<string, object> Attributes {
          set {
             attributesDirty = true;
@@ -209,15 +229,15 @@ namespace SDL {
       }
 
       /**
-      * A property for the mapping of this tag's attributes to their
-      * respective namespaces.  Attributes with no namespace are mapped to
-      * an empty string ("")
-      *
-      * When read, this property returns a copy of the mapping.  It is
-      * not write-through.
-      *
-      * This property is read only
-      */
+       * A property for the mapping of this tag's attributes to their
+       * respective namespaces.  Attributes with no namespace are mapped to
+       * an empty string ("")
+       *
+       * When read, this property returns a copy of the mapping.  It is
+       * not write-through.
+       *
+       * This property is read only
+       */
       public IDictionary<string, string> AttributeToNamespace {
          get {
             if (attributesDirty) {
@@ -231,11 +251,11 @@ namespace SDL {
 
 
       /**
-      * An indexer for the tag's attributes.  This indexer sets the
-      * attribute's namespace to an empty string ("")
-      * @param key The key for this attribute
-      * @returnThe value associated with the \ckey
-      */
+       * An indexer for the tag's attributes.  This indexer sets the
+       * attribute's namespace to an empty string ("")
+       * @param key The key for this attribute
+       * @returnThe value associated with the \ckey
+       */
       public object this[string key] {
          get {
             return attributes[key];
@@ -247,10 +267,10 @@ namespace SDL {
       }
 
       /**
-      * Set the <c>key</c> to the given value and sets the namespace.
-      * @param sdlNamespace The namespace for this attribute
-      * @param key The key for this attribute
-      */
+       * Set the <c>key</c> to the given value and sets the namespace.
+       * @param sdlNamespace The namespace for this attribute
+       * @param key The key for this attribute
+       */
       public object this[string sdlNamespace, string key] {
          set {
             attributesDirty = true;
@@ -269,10 +289,10 @@ namespace SDL {
       }
 
       /**
-      * An indexer for the tag's values
-      * @param index The <c>index</c> to get or set
-      * @return The value at the given \cindex
-      */
+       * An indexer for the tag's values
+       * @param index The <c>index</c> to get or set
+       * @return The value at the given \cindex
+       */
       public object this[int index] {
          get {
             return values[index];
@@ -286,49 +306,49 @@ namespace SDL {
 
 
       /**
-      * Add a child to this tag
-      * @param child The child to add
-      */
+       * Add a child to this tag
+       * @param child The child to add
+       */
       public void AddChild(Tag child) {
          childrenDirty = true;
          children.Add(child);
       }
 
       /**
-      * Remove a child from this tag
-      * @param child The child to remove
-      * @return true if the child is removed
-      */
+       * Remove a child from this tag
+       * @param child The child to remove
+       * @return true if the child is removed
+       */
       public bool RemoveChild(Tag child) {
          childrenDirty = true;
          return children.Remove(child);
       }
 
       /**
-      * Add a value to this tag
-      * @param value The value to add
-      */
+       * Add a value to this tag
+       * @param value The value to add
+       */
       public void AddValue(object value) {
          valuesDirty = true;
          values.Add(SDLUtil.CoerceOrFail(value));
       }
 
       /**
-      * Remove a child from this tag
-      * @param child The child to remove
-      * @return true if the child is removed
-      */
+       * Remove a child from this tag
+       * @param child The child to remove
+       * @return true if the child is removed
+       */
       public bool RemoveValue(object value) {
          valuesDirty = true;
          return values.Remove(value);
       }
 
       /**
-      * Get all the children of this tag optionally recursing through all
-      * descendents.
-      * @param recursively If true, recurse through all descendents
-      * @return A snapshot of the children
-      */
+       * Get all the children of this tag optionally recursing through all
+       * descendents.
+       * @param recursively If true, recurse through all descendents
+       * @return A snapshot of the children
+       */
       public IList<Tag> GetChildren(bool recursively) {
          if (!recursively) {
             return this.Children;
@@ -347,24 +367,24 @@ namespace SDL {
       }
 
       /**
-      * Get the first child with the given name.  The search is not
-      * recursive.
-      * @param childName The name of the child Tag
-      * @return The first child tag having the given name or null if no
-      * such child exists
-      */
+       * Get the first child with the given name.  The search is not
+       * recursive.
+       * @param childName The name of the child Tag
+       * @return The first child tag having the given name or null if no
+       * such child exists
+       */
       public Tag GetChild(string childName) {
          return GetChild(childName, false);
       }
 
       /**
-      * Get the first child with the given name, optionally using a
-      * recursive search.
-      * @param childName The name of the child Tag
-      * @param recursive If the search should be recursive
-      * @return The first child tag having the given name or null if no
-      * such child exists
-      */
+       * Get the first child with the given name, optionally using a
+       * recursive search.
+       * @param childName The name of the child Tag
+       * @param recursive If the search should be recursive
+       * @return The first child tag having the given name or null if no
+       * such child exists
+       */
       public Tag GetChild(string childName, bool recursive) {
          foreach (Tag t in children) {
             if (t.Name.Equals(childName)) {
@@ -383,21 +403,21 @@ namespace SDL {
       }
 
       /**
-      * Get all children with the given name.  The search is not recursive.
-      * @param childName The name of the children to fetch
-      * @return All the child tags having the given name
-      */
+       * Get all children with the given name.  The search is not recursive.
+       * @param childName The name of the children to fetch
+       * @return All the child tags having the given name
+       */
       public IList<Tag> GetChildren(string childName) {
          return GetChildren(childName, false);
       }
 
       /**
-      * Get all the children with the given name (optionally searching
-      * descendants recursively)
-      * @param childName The name of the children to fetch
-      * @param recursive If true search all descendents
-      * @return All the child tags having the given name
-      */
+       * Get all the children with the given name (optionally searching
+       * descendants recursively)
+       * @param childName The name of the children to fetch
+       * @param recursive If true search all descendents
+       * @return All the child tags having the given name
+       */
       public IList<Tag> GetChildren(string childName, bool recursive) {
          List<Tag> kids = new List<Tag>();
          foreach (Tag t in children) {
@@ -414,14 +434,14 @@ namespace SDL {
       }
 
       /**
-      * Get the values for all children with the given name.  If the child
-      * has more than one value, all the values will be added as a list.  If
-      * the child has no value, null will be added.  The search is not
-      * recursive.
-      * @param name The name of the children from which values are
-      * retrieved
-      * @return A list of values (or lists of values)
-      */
+       * Get the values for all children with the given name.  If the child
+       * has more than one value, all the values will be added as a list.  If
+       * the child has no value, null will be added.  The search is not
+       * recursive.
+       * @param name The name of the children from which values are
+       * retrieved
+       * @return A list of values (or lists of values)
+       */
       public IList<object> GetChildrenValues(string name) {
          List<object> results = new List<object>();
          IList<Tag> children = GetChildren(name);
@@ -441,23 +461,23 @@ namespace SDL {
       }
 
       /**
-      * Get all children in the given namespace.  The search is not
-      * recursive.
-      * @param The namespace to search
-      * @return All the child tags in the given namespace
-      */
+       * Get all children in the given namespace.  The search is not
+       * recursive.
+       * @param The namespace to search
+       * @return All the child tags in the given namespace
+       */
       public IList<Tag> GetChildrenForNamespace(string sdlNamespace) {
          return GetChildrenForNamespace(sdlNamespace, false);
       }
 
       /**
-      * Get all the children in the given namespace (optionally searching
-      * descendants recursively)
-      * @param sdlNamespace The namespace of the children to
-      * fetch
-      * @param recursive If true search all descendents
-      * @return All the child tags in the given namespace
-      */
+       * Get all the children in the given namespace (optionally searching
+       * descendants recursively)
+       * @param sdlNamespace The namespace of the children to
+       * fetch
+       * @param recursive If true search all descendents
+       * @return All the child tags in the given namespace
+       */
       public IList<Tag> GetChildrenForNamespace(string sdlNamespace,
             bool recursive) {
 
@@ -476,10 +496,10 @@ namespace SDL {
       }
 
       /**
-      * Returns all attributes in the given namespace.
-      * @param sdlNamespace The namespace to search
-      * @return All attributes in the given namespace
-      */
+       * Returns all attributes in the given namespace.
+       * @param sdlNamespace The namespace to search
+       * @return All attributes in the given namespace
+       */
       public IDictionary<string, object> GetAttributesForNamespace(
             string sdlNamespace) {
 
@@ -498,14 +518,14 @@ namespace SDL {
       // Methods for reading in SDL input ////////////////////////////////////
 
       /**
-      * Add all the tags specified in the file at the given URL to this Tag.
-      * @param url url A UTF8 encoded .sdl file
-      * @return This tag after adding all the children read from the reader
+       * Add all the tags specified in the file at the given URL to this Tag.
+       * @param url url A UTF8 encoded .sdl file
+       * @return This tag after adding all the children read from the reader
 
-      * @exception System.IO.IOException If there is an IO problem
+       * @exception System.IO.IOException If there is an IO problem
        while reading the source
-      * @exception SDLParseException If the SDL input is malformed
-      */
+       * @exception SDLParseException If the SDL input is malformed
+       */
       public Tag ReadURL(string url) {
          WebRequest request = WebRequest.Create(url);
          Stream input = request.GetResponse().GetResponseStream();
@@ -514,40 +534,40 @@ namespace SDL {
       }
 
       /**
-     * Add all the tags specified in the given file to this Tag.
-      * @param file A UTF8 encoded .sdl file
-      * @return This tag after adding all the children read from the reader
+       * Add all the tags specified in the given file to this Tag.
+       * @param file A UTF8 encoded .sdl file
+       * @return This tag after adding all the children read from the reader
       ///
-      * @exception System.IO.IOException If there is an IO problem
-      * while reading the source
-      * @exception SDLParseException If the SDL input is malformed
-      */
+       * @exception System.IO.IOException If there is an IO problem
+       * while reading the source
+       * @exception SDLParseException If the SDL input is malformed
+       */
       public Tag ReadFile(string file) {
          return Read(new StreamReader(file, System.Text.Encoding.UTF8));
       }
 
       /**
-      * Add all the tags specified in the given String to this Tag.
-      * @param text An SDL string
-      * @return This tag after adding all the children read from the reader
-      *
-      * @exception SDLParseException If the SDL input is malformed
-      *
-      */
+       * Add all the tags specified in the given String to this Tag.
+       * @param text An SDL string
+       * @return This tag after adding all the children read from the reader
+       *
+       * @exception SDLParseException If the SDL input is malformed
+       *
+       */
       public Tag ReadString(string text) {
          return Read(new StringReader(text));
       }
 
       /**
-      * Add all the tags specified in the given Reader to this Tag.
-      * @param reader A reader containing SDL source
-      * @return This tag after adding all the children read from the reader
-      *
-      * @exception System.IO.IOException If there is an IO problem
-      * while reading the source
-      * @exception SDLParseException If the SDL input is malformed
-      *
-      */
+       * Add all the tags specified in the given Reader to this Tag.
+       * @param reader A reader containing SDL source
+       * @return This tag after adding all the children read from the reader
+       *
+       * @exception System.IO.IOException If there is an IO problem
+       * while reading the source
+       * @exception SDLParseException If the SDL input is malformed
+       *
+       */
       public Tag Read(TextReader reader) {
          IList<Tag> tags = new Parser(reader).Parse();
          foreach (Tag t in tags) {
@@ -557,26 +577,26 @@ namespace SDL {
       }
 
       /**
-      * Write this tag out to the given file.
-      * @param file The file path to which we will write the children
-      * of this tag.
-      * @exception IOException If there is an IO problem during the
-      * write operation
-      */
+       * Write this tag out to the given file.
+       * @param file The file path to which we will write the children
+       * of this tag.
+       * @exception IOException If there is an IO problem during the
+       * write operation
+       */
       public void WriteFile(string file) {
          WriteFile(file, false);
       }
 
       /**
-      * Write this tag out to the given file (optionally clipping the root.)
-      * @param file The file path to which we will write this tag
+       * Write this tag out to the given file (optionally clipping the root.)
+       * @param file The file path to which we will write this tag
 
-      * @param includeRoot If true this tag will be included in the
-      * file as the root element, if false only the children will be written
+       * @param includeRoot If true this tag will be included in the
+       * file as the root element, if false only the children will be written
 
-      * @exception IOException If there is an IO problem during the
-      * write operation
-      */
+       * @exception IOException If there is an IO problem during the
+       * write operation
+       */
       public void WriteFile(string file, bool includeRoot) {
          Write(new StreamWriter(file, false, System.Text.Encoding.UTF8),
                includeRoot);
@@ -584,15 +604,15 @@ namespace SDL {
       }
 
       /**
-      * Write this tag out to the given writer (optionally clipping the
-      * root.)
-      * @param writer The writer to which we will write this tag
+       * Write this tag out to the given writer (optionally clipping the
+       * root.)
+       * @param writer The writer to which we will write this tag
 
-      * @param includeRoot If true this tag will be written out as
-      * the root element, if false only the children will be written
-      * @exception IOException If there is an IO problem during the
-      * write operation
-      */
+       * @param includeRoot If true this tag will be written out as
+       * the root element, if false only the children will be written
+       * @exception IOException If there is an IO problem during the
+       * write operation
+       */
       public void Write(TextWriter writer, bool includeRoot) {
          //O-FIXME: sostituire con NewLine
          string newLine = "\r\n";
@@ -612,19 +632,19 @@ namespace SDL {
       }
 
       /**
-      * Produces a full SDL "dump" of this tag.  The output is valid SDL.
-      * @return SDL code describing this tag
-      */
+       * Produces a full SDL "dump" of this tag.  The output is valid SDL.
+       * @return SDL code describing this tag
+       */
       public override string ToString() {
          return ToString("");
       }
 
       /**
-      * Produces a full SDL "dump" of this tag using the given prefix before
-      * each line.
-      * @param linePrefix Text to be prefixed to each line
-      * @return SDL code describing this tag
-      */
+       * Produces a full SDL "dump" of this tag using the given prefix before
+       * each line.
+       * @param linePrefix Text to be prefixed to each line
+       * @return SDL code describing this tag
+       */
       string ToString(string linePrefix) {
          StringBuilder sb = new StringBuilder();
          sb.Append(linePrefix);
@@ -684,20 +704,20 @@ namespace SDL {
       }
 
       /**
-      * Returns a string containing an XML representation of this tag.
-      * Values will be represented using _val0, _val1, etc.
-      * @return An XML String describing this Tag
-      */
+       * Returns a string containing an XML representation of this tag.
+       * Values will be represented using _val0, _val1, etc.
+       * @return An XML String describing this Tag
+       */
       public string ToXMLString() {
          return ToXMLString("");
       }
 
       /**
-      * Returns a string containing an XML representation of this tag.
-      * Values will be represented using _val0, _val1, etc.
-      * @param linePrefix A prefix to insert before every line.
-      * @return An XML String describing this Tag
-      */
+       * Returns a string containing an XML representation of this tag.
+       * Values will be represented using _val0, _val1, etc.
+       * @param linePrefix A prefix to insert before every line.
+       * @return An XML String describing this Tag
+       */
       string ToXMLString(string linePrefix) {
          string newLine = "\r\n";
 
@@ -757,10 +777,10 @@ namespace SDL {
       }
 
       /**
-      * Tests for equality using \cToString()
-      * @param obj The object to test
-      * @return true if \cToString().Equals(obj.ToString)
-      */
+       * Tests for equality using \cToString()
+       * @param obj The object to test
+       * @return true if \cToString().Equals(obj.ToString)
+       */
       public override bool Equals(object obj) {
          if (obj == null) {
             return false;
@@ -770,8 +790,8 @@ namespace SDL {
 
       /**
        * Generates a hashcode using <c>ToString().GetHashCode()</c>
-      * @return A unique hashcode for this tag
-      */
+       * @return A unique hashcode for this tag
+       */
       public override int GetHashCode() {
          return ToString().GetHashCode();
       }
