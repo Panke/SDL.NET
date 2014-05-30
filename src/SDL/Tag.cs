@@ -377,6 +377,11 @@ namespace SDL {
          return GetChild(childName, false);
       }
 
+      public U GetChildAs<U>(string name, U defaultValue) {
+         SDL.Tag tag = GetChild(name);
+         return tag == null ? defaultValue : tag.ValueAs<U>(defaultValue);
+      }
+
       /**
        * Get the first child with the given name, optionally using a
        * recursive search.
