@@ -43,7 +43,7 @@ namespace SDL {
       /// Create an SDL parser
       /// </summary>
       internal Parser(TextReader reader) {
-         this.reader = reader;
+         this.reader = new Preprocessor(reader).Process();
       }
 
       /// <summary>

@@ -21,7 +21,6 @@ namespace SDL.Test {
 
       [NUF.Test]public void ticked_string_test() {
          SDL.Tag root = new SDL.Tag("root").ReadString("talk `I said \"something\"`");
-         System.Console.WriteLine(root.GetChild("talk").Value);
          NUF.Assert.That(root.GetChild("talk").Value, NUF.Is.EqualTo("I said \"something\""));
       }
 
