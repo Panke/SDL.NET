@@ -249,7 +249,6 @@ namespace SDL {
          }
       }
 
-
       /**
        * An indexer for the tag's attributes.  This indexer sets the
        * attribute's namespace to an empty string ("")
@@ -505,9 +504,7 @@ namespace SDL {
        * @param sdlNamespace The namespace to search
        * @return All attributes in the given namespace
        */
-      public IDictionary<string, object> GetAttributesForNamespace(
-            string sdlNamespace) {
-
+      public IDictionary<string, object> GetAttributesForNamespace(string sdlNamespace) {
          SortedDictionary<string, object> atts =
             new SortedDictionary<string, object>();
 

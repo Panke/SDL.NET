@@ -42,12 +42,50 @@ namespace SDL.Test {
          SCG.IList<Tag> list = num.GetChildren(false);
          NUF.Assert.That(list.Count, NUF.Is.EqualTo(0));
       }
+
       [NUF.Test]public void attribute_test() {
          SDL.Tag root = new SDL.Tag("root").ReadString("person name=\"odv\" age=50");
          Tag p = root.GetChild("person");
 
          NUF.Assert.That(p["name"], NUF.Is.EqualTo("odv"));
          NUF.Assert.That(p["age"], NUF.Is.EqualTo(50));
+
+      }
+
+      [NUF.Test]public void attribute_and_value_test() {
+         SDL.Tag root = new SDL.Tag("root").ReadString("command 35 text=\"comando 35\"");
+         Tag c = root.GetChild("command");
+
+         NUF.Assert.That(c["text"], NUF.Is.EqualTo("comando 35"));
+         NUF.Assert.That(c.ValueAs<int>(), NUF.Is.EqualTo(35));
+         NUF.Assert.That(root.GetChildAs<int>("command", 0), NUF.Is.EqualTo(35));
+      }
+
+      [NUF.Test]public void attribute_list_test() {
+         string sdl = "command 35 text=\"comando 35\"\n";
+         sdl += "command 36 text=\"comando 36\"\n";
+         SDL.Tag root = new SDL.Tag("root").ReadString(sdl);
+         var children = root.GetChildren("command");
+         NUF.Assert.That(children.Count, NUF.Is.EqualTo(2));
+         NUF.Assert.That(root.GetChildAs<int>("command", 0), NUF.Is.EqualTo(35));
+
+         Tag c = children[0];
+         NUF.Assert.That(c["text"], NUF.Is.EqualTo("comando 35"));
+         NUF.Assert.That(c.ValueAs<int>(), NUF.Is.EqualTo(35));
+
+         c = children[1];
+         NUF.Assert.That(c["text"], NUF.Is.EqualTo("comando 36"));
+         NUF.Assert.That(c.ValueAs<int>(), NUF.Is.EqualTo(36));
+      }
+
+      [NUF.Test]public void more_values() {
+         string sdl = "command 35 \"comando 35\"";
+         SDL.Tag root = new SDL.Tag("root").ReadString(sdl);
+         Tag c = root.GetChild("command");
+         NUF.Assert.That(c.ValueAs<int>(), NUF.Is.EqualTo(35));
+         foreach (var v in c.Values) {
+            System.Console.WriteLine(v.ToString());
+         }
       }
 
 //
