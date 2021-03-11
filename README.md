@@ -44,6 +44,6 @@ Also:
 
 Documentation
 -------------
-* [SDL site](http://sdl.ikayzo.org/display/SDL/Language+Guide)):
-* [License]()
+* [SDL site](https://sdlang.org/):
+* [License](./LICENSE.md)
 
