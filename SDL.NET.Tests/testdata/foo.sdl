@@ -1,5 +1,5 @@
 foo_1
 foo_2
-#include ./tests/bar.sdl
+#include ./testdata/bar.sdl
 #include asc
 foo_last

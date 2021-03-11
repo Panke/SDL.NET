@@ -1,5 +1,5 @@
 main_1
-#include    ./tests/foo.sdl
+#include    ./testdata/foo.sdl
 #include
 main_2
 main_last

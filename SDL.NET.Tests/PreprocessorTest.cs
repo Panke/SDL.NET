@@ -1,12 +1,14 @@
-using PetaTest;
+using Xunit;
 using SCG = System.Collections.Generic;
-namespace SDL.Test {
-   /**
-     $make test TF='-run:SDL.Test.SimpleTagTest'
-     */
-   [TestFixture] public class PreprocessorTest {
-      [Test]public void Int_test() {
-         var stream = new System.IO.StreamReader("./tests/root.sdl", System.Text.Encoding.UTF8);
+
+using SDL.NET;
+
+namespace SDL.NET.Tests {
+
+   public class PreprocessorTest {
+      [Fact]
+      public void Int_test() {
+         var stream = new System.IO.StreamReader("./testdata/root.sdl", System.Text.Encoding.UTF8);
          var pp = new Preprocessor(stream);
          string outTxt = pp.Process().ReadToEnd();
          string txt = "main_1"
@@ -19,7 +21,7 @@ namespace SDL.Test {
             + "\n#include"
             + "\nmain_2"
             + "\nmain_last\n";
-         Assert.AreEqual(outTxt, txt);
+         Assert.Equal(outTxt, txt);
       }
    }
 }
