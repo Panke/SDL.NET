@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace SDL {
    enum Type {
@@ -971,23 +972,23 @@ namespace SDL {
 
          if (tail.Length == 0) {
             if (hasDot) {
-               return Convert.ToDouble(number);
+               return Convert.ToDouble(number, CultureInfo.InvariantCulture);
             } else {
                return Convert.ToInt32(number);
             }
          }
 
          if (tail.ToUpper().Equals("BD")) {
-            return Convert.ToDecimal(number);
+            return Convert.ToDecimal(number, CultureInfo.InvariantCulture);
          } else if (tail.ToUpper().Equals("L")) {
             if (hasDot)
                new FormatException("Long literal with decimal " +
                                    "point");
             return Convert.ToInt64(number);
          } else if (tail.ToUpper().Equals("F")) {
-            return Convert.ToSingle(number);
+            return Convert.ToSingle(number, CultureInfo.InvariantCulture);
          } else if (tail.ToUpper().Equals("D")) {
-            return Convert.ToDouble(number);
+            return Convert.ToDouble(number, CultureInfo.InvariantCulture);
          }
 
          throw new FormatException("Could not parse number <" + literal +
